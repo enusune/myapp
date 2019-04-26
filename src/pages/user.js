@@ -1,10 +1,10 @@
 
-import styles from './products.css';
+import styles from './user.css';
 
 export default function() {
   return (
     <div className={styles.normal}>
-      <h1>Page products</h1>
+      <h1>Page user</h1>
     </div>
   );
 }
