@@ -2,6 +2,7 @@ export default {
   namespace: 'app',
   state: {
     collapsed: false,
+    activeKey: '1',
     panes: [
       {title: `dashboard`, content: '', key: '1', closable: false, url: '/dashboard'},
     ],
@@ -38,6 +39,12 @@ export default {
   subscriptions: {},
   effects: {},
   reducers: {
+    updateState(state, {payload}) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
     handleCollapseChange(state, {payload}) {
       return {
         ...state,
