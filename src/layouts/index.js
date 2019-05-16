@@ -1,13 +1,15 @@
 import React from 'react'
 import {Layout} from 'antd';
-import Header from '../components/layout/Header'
-import MySider from '../components/layout/Sider'
-import MyMenu from '../components/layout/Menu'
-import MyTab from '../components/layout/Tabs'
-
+import {MyLayout} from '../components'
 import {connect} from 'dva';
 
+const {Header,MySider,MyMenu,MyTab} = MyLayout
+
 class BasicLayout extends React.Component {
+  /**
+   * 左侧菜单是否收回
+   * @param collapsed
+   */
   onCollapseChange = collapsed => {
     this.props.dispatch({
       type: 'app/handleCollapseChange',
@@ -15,18 +17,50 @@ class BasicLayout extends React.Component {
     })
   }
 
+  /**
+   * 点击菜单
+   * @param element
+   */
   handelMenuClick = element => {
+    const {dispatch, app} = this.props
+    const {selectedKeys} = app
     let newPane = {title: element.item.props.name, content: '', key: element.key, url: element.item.props.url}
     this.onPaneAdd(newPane)
+    dispatch({
+      type: 'app/updateState',
+      payload: {
+        selectedKeys: selectedKeys.includes(element.key, 0) ? selectedKeys : [element.key],
+      },
+    })
   }
 
+  /**
+   * 二级菜单点击
+   * @param element
+   */
+  handleSubMenuTitleClick = element => {
+    const {dispatch, app} = this.props
+    const {openKeys} = app
+
+    dispatch({
+      type: 'app/updateState',
+      payload: {
+        openKeys: openKeys.includes(element.key, 0) ? openKeys.filter(item => item !== element.key) : [...openKeys, element.key],
+      },
+    })
+  }
+
+  /**
+   * 打开新的面板
+   * @param newPane
+   */
   onPaneAdd = (newPane) => {
     const {app, dispatch, history,} = this.props
     const {panes,} = app
     let flag = false
     //路由到相关页面
     history.push(newPane.url)
-    setTimeout(()=>{
+    setTimeout(() => {
       newPane.content = this.props.children
       let newPanes = panes.map(item => {
         if (newPane.key === item.key) {
@@ -42,19 +76,30 @@ class BasicLayout extends React.Component {
           activeKey: newPane.key,
         },
       })
-    },100)
+    }, 100)
   }
 
+  /**
+   * 切换面板
+   * @param targetKey
+   */
   onPaneChange = targetKey => {
-    const {dispatch,} = this.props
+    const {dispatch, app} = this.props
+    const {selectedKeys,} = app
+
     dispatch({
       type: 'app/updateState',
       payload: {
-        activeKey: targetKey
+        activeKey: targetKey,
+        selectedKeys: selectedKeys.includes(targetKey, 0) ? selectedKeys : [targetKey],
       },
     })
   }
 
+  /**
+   * 关闭面板
+   * @param targetKey
+   */
   onPaneRemove = targetKey => {
     const {dispatch,} = this.props
     const payload = this._removeTap(targetKey)
@@ -83,19 +128,89 @@ class BasicLayout extends React.Component {
     }
     return {
       panes: newPanes,
-      activeKey: newActiveKey
+      activeKey: newActiveKey,
+      selectedKeys: newActiveKey,
     }
+  }
+
+
+  /**
+   * 右键菜单重新加载
+   * @param props
+   */
+  onReloadPane = ({props}) => {
+    const {key ,panes} = props
+    this.onPaneAdd(panes.find(item => item.key === key))
+  }
+
+  /**
+   * 右键菜单关闭当前
+   * @param props
+   */
+  onCloseThisPane = ({props}) => {
+    const {key,panes} = props
+    if (panes.find(item => item.key === key).closable === false) {
+      return
+    }
+    this.onPaneRemove(key)
+  }
+
+  /**
+   * 右键菜单关闭其他
+   * @param props
+   */
+  onCloseOtherPane = ({props}) => {
+    const {dispatch} = this.props
+    const {key ,panes} = props
+    dispatch({
+      type: 'app/updateState',
+      payload: {
+        panes:panes.filter(item => item.key === key || item.closable === false),
+        activeKey: key,
+        selectedKeys: key,},
+    })
+  }
+
+  /**
+   * 右键菜单关闭右侧
+   * @param props
+   */
+  onCloseRightPane = ({props}) => {
+    const {dispatch} = this.props
+    const {key ,panes} = props
+    let end = panes.findIndex(item => item.key === key)+1
+    dispatch({
+      type: 'app/updateState',
+      payload: {
+        panes:panes.slice(0,end),
+        activeKey: key,
+        selectedKeys: key,},
+    })
   }
 
   render() {
     const {app, children} = this.props
-    const {menus, theme, collapsed, panes, activeKey,} = app
-    const {handelMenuClick, onCollapseChange, onPaneAdd, onPaneChange, onPaneRemove} = this
+    const {menus, theme, collapsed, panes, activeKey, openKeys, selectedKeys} = app
+    const {
+      onPaneAdd,
+      onPaneChange,
+      onPaneRemove,
+      onReloadPane,
+      handelMenuClick,
+      onCloseThisPane,
+      onCloseOtherPane,
+      onCloseRightPane,
+      onCollapseChange,
+      handleSubMenuTitleClick
+    } = this
     const menuProps = {
       theme,
       menus,
       children,
+      openKeys,
+      selectedKeys,
       handelMenuClick,
+      handleSubMenuTitleClick,
     }
     const tapProps = {
       panes,
@@ -104,6 +219,12 @@ class BasicLayout extends React.Component {
       onPaneChange,
       onPaneAdd,
       onPaneRemove,
+      contextMenuProps: {
+        onReloadPane,
+        onCloseThisPane,
+        onCloseOtherPane,
+        onCloseRightPane,
+      },
     }
 
     return (

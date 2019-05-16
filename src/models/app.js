@@ -3,6 +3,8 @@ export default {
   state: {
     collapsed: false,
     activeKey: '1',
+    openKeys: ['1'],
+    selectedKeys: ['1'],
     panes: [
       {title: `dashboard`, content: '', key: '1', closable: false, url: '/dashboard'},
     ],
@@ -24,12 +26,12 @@ export default {
         url: '/user',
       },]
     }, {
-      id: '3',
+      id: '4',
       name: '用户管理',
       icon: 'user',
       url: '1',
       children: [{
-        id: '4',
+        id: '5',
         name: '用户管理',
         icon: 'user',
         url: '/user',

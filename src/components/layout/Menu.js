@@ -2,23 +2,14 @@ import React, {Component, Fragment} from "react";
 import {Icon, Menu} from "antd";
 import withRouter from 'umi/withRouter'
 
-const {SubMenu} = Menu
-
 class MyMenu extends Component {
 
-  constructor() {
-    super()
-    this.state = {
-      defaultSelect: ['1']
-    }
-  }
-
-
-  generateMenus = data => {
+  generateMenus = (data,handleSubMenuTitleClick) => {
     return data.map(item => {
       if (item.children) {
         return (
-          <SubMenu
+          <Menu.SubMenu
+            onTitleClick={handleSubMenuTitleClick}
             key={item.id}
             title={
               <Fragment>
@@ -28,7 +19,7 @@ class MyMenu extends Component {
             }
           >
             {this.generateMenus(item.children)}
-          </SubMenu>
+          </Menu.SubMenu>
         )
       } else {
         return (
@@ -45,12 +36,17 @@ class MyMenu extends Component {
     const {
       theme,
       menus,
-      handelMenuClick
+      openKeys,
+      selectedKeys,
+      handelMenuClick,
+      handleSubMenuTitleClick
     } = this.props
     return (
-      <Menu theme={theme} mode="inline" defaultSelectedKeys={this.state.defaultSelect}
-            onClick={handelMenuClick.bind(this)}>
-        {this.generateMenus(menus)}
+      <Menu theme={theme} mode="inline"
+            openKeys={openKeys}
+            selectedKeys={selectedKeys}
+            onClick={handelMenuClick}>
+        {this.generateMenus(menus,handleSubMenuTitleClick)}
       </Menu>
     );
   }
