@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Card, Col, Row} from 'antd';
 import UserList from './components/UserList'
+import UserDetailsModal from './components/UserDetailsModal'
 import WrappedUserSearchForm from './components/UserSearchForm'
 import {connect} from 'dva';
 import styles from './user.css'
@@ -61,23 +62,56 @@ class User extends Component {
         )
     }
 
+    onDetailsButtonClick = (user,) =>{
+        this.props.dispatch({
+            type: 'user/updateState',
+            payload: {
+                userDetail: {visible: true,data: {...user}},
+            }
+        })
+    }
+    onUserDetailsModalCancel = () => {
+        this.props.dispatch({
+            type: 'user/updateState',
+            payload: {
+                userDetail: {visible: false,},
+            }
+        })
+    }
+
     render() {
-        const {handleTableChange, fetch} = this
-        const userListProps = {
-            handleTableChange,
+        const {
             fetch,
+            handleTableChange,
+            onSearchFormChange,
+            onDetailsButtonClick,
+            onUserDetailsModalCancel
+        } = this
+        const userListProps = {
+            fetch,
+            handleTableChange,
+            onDetailsButtonClick,
             ...this.props.user.userList
+        }
+        const searchFormProps = {
+            fetch,
+            onSearchFormChange
+        }
+        const detailProps = {
+            onUserDetailsModalCancel,
+            ...this.props.user.userDetail
         }
         return (
             <div className={styles.normal}>
                 <Row gutter={18}>
                     <Col span={24}>
                         <Card title="用户列表" bordered={false} style={{background: '#FFFFFF'}}>
-                            <WrappedUserSearchForm fetch={this.fetch} onSearchFormChange={this.onSearchFormChange}/>
+                            <WrappedUserSearchForm {...searchFormProps}/>
                             <UserList {...userListProps}/>
                         </Card>
                     </Col>
                 </Row>
+                <UserDetailsModal {...detailProps}/>
             </div>
         )
     }

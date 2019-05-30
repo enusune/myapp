@@ -134,7 +134,7 @@ class BasicLayout extends React.Component {
         return {
             panes: newPanes,
             activeKey: newActiveKey,
-            selectedKeys: newActiveKey,
+            selectedKeys: [newActiveKey],
         }
     }
 
@@ -172,7 +172,7 @@ class BasicLayout extends React.Component {
             payload: {
                 panes: panes.filter(item => item.key === key || item.closable === false),
                 activeKey: key,
-                selectedKeys: key,
+                selectedKeys: [key],
             },
         })
     }
@@ -190,7 +190,7 @@ class BasicLayout extends React.Component {
             payload: {
                 panes: panes.slice(0, end),
                 activeKey: key,
-                selectedKeys: key,
+                selectedKeys: [key],
             },
         })
     }

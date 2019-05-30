@@ -3,6 +3,10 @@ import request from '../../util/request';  // request 是 demo 项目脚手架�
 export default {
     namespace: 'user',
     state: {
+        userDetail:{
+            visible: false,
+            data: {}
+        },
         userList: {
             data: [],
             pagination: {
@@ -15,7 +19,7 @@ export default {
             },
             loading: false,
         },
-        userSearchFormParams: {}
+        userSearchFormParams: {},
     },
     subscriptions: {},
     effects: {
