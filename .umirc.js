@@ -1,25 +1,25 @@
 
 // ref: https://umijs.org/config/
 export default {
-  treeShaking: true,
-  plugins: [
+    treeShaking: true,
+    plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     ['umi-plugin-react', {
-      antd: true,
-      dva: true,
-      dynamicImport: false,
-      title: 'myapp',
-      dll: false,
-      
-      routes: {
+        antd: true,
+        dva: true,
+        dynamicImport: false,
+        title: 'myapp',
+        dll: false,
+        
+        routes: {
         exclude: [
-          /models\//,
-          /services\//,
-          /model\.(t|j)sx?$/,
-          /service\.(t|j)sx?$/,
-          /components\//,
+            /models\//,
+            /services\//,
+            /model\.(t|j)sx?$/,
+            /service\.(t|j)sx?$/,
+            /components\//,
         ],
-      },
+        },
     }],
-  ],
+    ],
 }

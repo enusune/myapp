@@ -7,21 +7,21 @@ const Header = Layout.Header
 
 class MyHeader extends Component {
 
-  render() {
-    const {
-      collapsed,
-      onCollapseChange
-    } = this.props
-    return (
-      <Header style={{background: '#fff', padding: 0}}>
-        <Icon
-          className={styles.trigger}
-          type={collapsed ? 'menu-unfold' : 'menu-fold'}
-          onClick={onCollapseChange.bind(this, !collapsed)}
-        />
-      </Header>
-    )
-  }
+    render() {
+        const {
+            collapsed,
+            onCollapseChange
+        } = this.props
+        return (
+            <Header style={{background: '#fff', padding: 0}}>
+                <Icon
+                    className={styles.trigger}
+                    type={collapsed ? 'menu-unfold' : 'menu-fold'}
+                    onClick={onCollapseChange.bind(this, !collapsed)}
+                />
+            </Header>
+        )
+    }
 }
 
 export default MyHeader

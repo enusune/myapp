@@ -3,4 +3,4 @@ import MySider from './Sider'
 import MyMenu from './Menu'
 import MyTab from './Tabs'
 
-export  {Header,MySider,MyMenu,MyTab}
+export {Header, MySider, MyMenu, MyTab}
